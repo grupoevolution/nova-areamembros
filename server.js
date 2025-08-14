@@ -372,11 +372,12 @@ app.delete('/api/products/:id', (req, res) => {
 // API ROUTES - ADMIN AUTH
 // =============================================================================
 
-// Simple admin login (você pode melhorar com JWT)
+// Simple admin login with new credentials
 app.post('/api/admin/login', (req, res) => {
     const { username, password } = req.body;
     
-    if (username === 'admin' && password === 'admin123') {
+    // New secure credentials
+    if (username === 'painel-iago' && password === '#Senha8203') {
         res.json({ success: true, message: 'Login realizado com sucesso!' });
     } else {
         res.status(401).json({ success: false, error: 'Credenciais inválidas' });
@@ -442,8 +443,8 @@ app.get('/sw.js', (req, res) => {
     res.send(swContent);
 });
 
-// Serve admin panel
-app.get('/admin', (req, res) => {
+// Serve admin panel with secure URL
+app.get('/painel-x7k2m9', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
