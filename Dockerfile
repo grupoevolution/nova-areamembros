@@ -16,11 +16,6 @@ COPY . .
 # Create uploads directory
 RUN mkdir -p uploads
 
-# Create public directory and copy static files
-RUN mkdir -p public
-COPY index.html public/
-COPY admin.html public/
-
 # Expose port
 EXPOSE 3000
 
