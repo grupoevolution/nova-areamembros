@@ -1,0 +1,1313 @@
+.file-preview-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--gray-100);
+        }
+
+        .file-preview-image,
+        .file-preview-video {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .file-preview-remove {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        /* Loading & Messages */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray-500);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-200);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background-color: #D1FAE5;
+            border-color: var(--success-color);
+            color: #065F46;
+        }
+
+        .alert-error {
+            background-color: #FEE2E2;
+            border-color: var(--danger-color);
+            color: #991B1B;
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn-edit {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .action-btn-edit:hover {
+            background-color: #BFDBFE;
+        }
+
+        .action-btn-delete {
+            background-color: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .action-btn-delete:hover {
+            background-color: #FECACA;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: -100%;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+
+            .main-header {
+                padding: 1rem;
+            }
+
+            .main-body {
+                padding: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="login-logo">VIP</div>
+                <h1 class="login-title">Painel Admin</h1>
+                <p class="login-subtitle">Acesse o painel de gerenciamento</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Usuário</label>
+                    <input type="text" class="form-input" id="username" value="admin" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" class="form-input" id="password" value="admin123" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    Entrar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Layout -->
+    <div class="admin-layout" id="adminLayout">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="sidebar-logo-icon">VIP</div>
+                    <span class="sidebar-logo-text">Admin Panel</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-item active" onclick="showSection('products')">
+                    <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                    </svg>
+                    Produtos
+                </button>
+                
+                <button class="nav-item" onclick="showSection('analytics')">
+                    <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+                    </svg>
+                    Analytics
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="nav-item" onclick="logout()">
+                    <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/>
+                    </svg>
+                    Sair
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="main-header">
+                <h1 class="main-title" id="pageTitle">Gerenciar Produtos</h1>
+                <button class="btn btn-success" onclick="openProductModal()">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                    </svg>
+                    Novo Produto
+                </button>
+            </div>
+            
+            <div class="main-body">
+                <!-- Products Section -->
+                <div class="content-section active" id="productsSection">
+                    <div id="alertContainer"></div>
+                    
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Imagem</th>
+                                    <th>Nome</th>
+                                    <th>Categoria</th>
+                                    <th>Status</th>
+                                    <th>Preço</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTable">
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="loading">
+                                            <div class="loading-spinner"></div>
+                                            Carregando produtos...
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Analytics Section -->
+                <div class="content-section" id="analyticsSection">
+                    <div class="alert alert-success">
+                        <strong>Em desenvolvimento:</strong> Seção de analytics será implementada em breve.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Novo Produto</h2>
+                <button class="modal-close" onclick="closeProductModal()">&times;</button>
+            </div>
+            
+            <form id="productForm" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input type="hidden" id="productId">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nome do Produto *</label>
+                        <input type="text" class="form-input" id="productName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Descrição</label>
+                        <textarea class="form-textarea" id="productDescription" placeholder="Descreva o produto..."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Categoria</label>
+                            <select class="form-select" id="productCategory">
+                                <option value="meus_produtos">Meus Produtos</option>
+                                <option value="mais_vendidos">Mais Vendidos</option>
+                                <option value="criadoras_conteudos">Criadoras de Conteúdos</option>
+                                <option value="chamadas_video">Chamadas de Vídeo</option>
+                                <option value="para_homens">Para Homens</option>
+                                <option value="fetiches">Fetiches</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Preço (R$)</label>
+                            <input type="number" class="form-input" id="productPrice" step="0.01" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">URL de Acesso</label>
+                            <input type="url" class="form-input" id="productAccessUrl" placeholder="https://...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">URL de Compra</label>
+                            <input type="url" class="form-input" id="productBuyUrl" placeholder="https://...">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Banner Principal</label>
+                        <div class="file-upload" onclick="document.getElementById('bannerInput').click()">
+                            <input type="file" id="bannerInput" class="file-upload-input" accept="image/*">
+                            <svg class="file-upload-icon" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"/>
+                            </svg>
+                            <div class="file-upload-text">Clique para selecionar imagem</div>
+                            <div class="file-upload-hint">PNG, JPG até 10MB</div>
+                        </div>
+                        <div id="bannerPreview" class="file-preview"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Vídeo Principal</label>
+                        <div class="file-upload" onclick="document.getElementById('videoInput').click()">
+                            <input type="file" id="videoInput" class="file-upload-input" accept="video/*">
+                            <svg class="file-upload-icon" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2z"/>
+                            </svg>
+                            <div class="file-upload-text">Clique para selecionar vídeo</div>
+                            <div class="file-upload-hint">MP4, MOV até 100MB</div>
+                        </div>
+                        <div id="videoPreview" class="file-preview"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Galeria (Fotos e Vídeos)</label>
+                        <div class="file-upload" onclick="document.getElementById('galleryInput').click()">
+                            <input type="file" id="galleryInput" class="file-upload-input" multiple accept="image/*,video/*">
+                            <svg class="file-upload-icon" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6 6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <div class="file-upload-text">Clique para selecionar múltiplos arquivos</div>
+                            <div class="file-upload-hint">Imagens e vídeos para a galeria</div>
+                        </div>
+                        <div id="galleryPreview" class="file-preview"></div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeProductModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">Salvar Produto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // =============================================================================
+        // GLOBAL VARIABLES
+        // =============================================================================
+        const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+        let isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+        let currentProducts = [];
+        let isEditing = false;
+        let currentEditId = null;
+
+        // =============================================================================
+        // INITIALIZATION
+        // =============================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            if (isLoggedIn) {
+                showAdminPanel();
+            }
+            
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Product form
+            document.getElementById('productForm').addEventListener('submit', handleProductSubmit);
+            
+            // File inputs
+            document.getElementById('bannerInput').addEventListener('change', (e) => handleFilePreview(e, 'bannerPreview'));
+            document.getElementById('videoInput').addEventListener('change', (e) => handleFilePreview(e, 'videoPreview'));
+            document.getElementById('galleryInput').addEventListener('change', (e) => handleFilePreview(e, 'galleryPreview'));
+        }
+
+        // =============================================================================
+        // AUTHENTICATION
+        // =============================================================================
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Entrando...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/admin/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    showAdminPanel();
+                } else {
+                    showAlert('Credenciais inválidas', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('Erro ao fazer login', 'error');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Entrar';
+            }
+        }
+
+        function showAdminPanel() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminLayout').classList.add('active');
+            loadProducts();
+        }
+
+        function logout() {
+            if (confirm('Deseja realmente sair?')) {
+                localStorage.removeItem('adminLoggedIn');
+                location.reload();
+            }
+        }
+
+        // =============================================================================
+        // NAVIGATION
+        // =============================================================================
+        function showSection(section) {
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Update content sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Update page title and show section
+            if (section === 'products') {
+                document.getElementById('pageTitle').textContent = 'Gerenciar Produtos';
+                document.getElementById('productsSection').classList.add('active');
+            } else if (section === 'analytics') {
+                document.getElementById('pageTitle').textContent = 'Analytics';
+                document.getElementById('analyticsSection').classList.add('active');
+            }
+        }
+
+        // =============================================================================
+        // PRODUCTS MANAGEMENT
+        // =============================================================================
+        async function loadProducts() {
+            try {
+                const response = await fetch(`${API_BASE}/api/products`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentProducts = data.products;
+                    renderProductsTable();
+                } else {
+                    showAlert('Erro ao carregar produtos', 'error');
+                }
+            } catch (error) {
+                console.error('Load products error:', error);
+                showAlert('Erro ao conectar com o servidor', 'error');
+            }
+        }
+
+        function renderProductsTable() {
+            const tbody = document.getElementById('productsTable');
+            
+            if (currentProducts.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 3rem; color: var(--gray-500);">
+                            Nenhum produto encontrado
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = currentProducts.map(product => `
+                <tr>
+                    <td>
+                        <img src="${product.banner_url || '/placeholder.png'}" alt="${product.name}" class="product-image">
+                    </td>
+                    <td>
+                        <div style="font-weight: 600;">${product.name}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-500);">${product.description || ''}</div>
+                    </td>
+                    <td>${getCategoryName(product.category)}</td>
+                    <td>
+                        <span class="status-badge ${product.access_url ? 'status-available' : 'status-locked'}">
+                            ${product.access_url ? 'Disponível' : 'Bloqueado'}
+                        </span>
+                    </td>
+                    <td>${product.price ? `R$ ${product.price.toFixed(2)}` : '-'}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="action-btn action-btn-edit" onclick="editProduct(${product.id})" title="Editar">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn action-btn-delete" onclick="deleteProduct(${product.id})" title="Excluir">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getCategoryName(category) {
+            const categories = {
+                'meus_produtos': 'Meus Produtos',
+                'mais_vendidos': 'Mais Vendidos',
+                'criadoras_conteudos': 'Criadoras de Conteúdos',
+                'chamadas_video': 'Chamadas de Vídeo',
+                'para_homens': 'Para Homens',
+                'fetiches': 'Fetiches'
+            };
+            return categories[category] || category;
+        }
+
+        // =============================================================================
+        // MODAL MANAGEMENT
+        // =============================================================================
+        function openProductModal(productId = null) {
+            isEditing = !!productId;
+            currentEditId = productId;
+            
+            const modal = document.getElementById('productModal');
+            const title = document.getElementById('modalTitle');
+            const form = document.getElementById('productForm');
+            
+            title.textContent = isEditing ? 'Editar Produto' : 'Novo Produto';
+            form.reset();
+            clearPreviews();
+            
+            if (isEditing) {
+                const product = currentProducts.find(p => p.id === productId);
+                if (product) {
+                    fillFormWithProduct(product);
+                }
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('active');
+            isEditing = false;
+            currentEditId = null;
+        }
+
+        function fillFormWithProduct(product) {
+            document.getElementById('productId').value = product.id;
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productDescription').value = product.description || '';
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productPrice').value = product.price || '';
+            document.getElementById('productAccessUrl').value = product.access_url || '';
+            document.getElementById('productBuyUrl').value = product.buy_url || '';
+        }
+
+        // =============================================================================
+        // FILE HANDLING
+        // =============================================================================
+        function handleFilePreview(event, previewId) {
+            const files = Array.from(event.target.files);
+            const preview = document.getElementById(previewId);
+            preview.innerHTML = '';
+            
+            files.forEach((file, index) => {
+                const item = document.createElement('div');
+                item.className = 'file-preview-item';
+                
+                if (file.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.className = 'file-preview-image';
+                    img.src = URL.createObjectURL(file);
+                    item.appendChild(img);
+                } else if (file.type.startsWith('video/')) {
+                    const video = document.createElement('video');
+                    video.className = 'file-preview-video';
+                    video.src = URL.createObjectURL(file);
+                    video.controls = true;
+                    item.appendChild(video);
+                }
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'file-preview-remove';
+                removeBtn.innerHTML = '×';
+                removeBtn.onclick = () => {
+                    item.remove();
+                    // Update file input
+                    const dt = new DataTransfer();
+                    const input = event.target;
+                    const fileList = Array.from(input.files);
+                    fileList.splice(index, 1);
+                    fileList.forEach(file => dt.items.add(file));
+                    input.files = dt.files;
+                };
+                
+                item.appendChild(removeBtn);
+                preview.appendChild(item);
+            });
+        }
+
+        function clearPreviews() {
+            document.getElementById('bannerPreview').innerHTML = '';
+            document.getElementById('videoPreview').innerHTML = '';
+            document.getElementById('galleryPreview').innerHTML = '';
+        }
+
+        // =============================================================================
+        // FORM SUBMISSION
+        // =============================================================================
+        async function handleProductSubmit(e) {
+            e.preventDefault();
+            
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Salvando...';
+            
+            try {
+                const formData = new FormData();
+                
+                // Basic fields
+                formData.append('name', document.getElementById('productName').value);
+                formData.append('description', document.getElementById('productDescription').value);
+                formData.append('category', document.getElementById('productCategory').value);
+                formData.append('price', document.getElementById('productPrice').value);
+                formData.append('access_url', document.getElementById('productAccessUrl').value);
+                formData.append('buy_url', document.getElementById('productBuyUrl').value);
+                
+                // Files
+                const bannerFile = document.getElementById('bannerInput').files[0];
+                if (bannerFile) {
+                    formData.append('banner', bannerFile);
+                }
+                
+                const videoFile = document.getElementById('videoInput').files[0];
+                if (videoFile) {
+                    formData.append('main_video', videoFile);
+                }
+                
+                const galleryFiles = Array.from(document.getElementById('galleryInput').files);
+                galleryFiles.forEach(file => {
+                    formData.append('gallery', file);
+                });
+                
+                const url = isEditing ? `${API_BASE}/api/products/${currentEditId}` : `${API_BASE}/api/products`;
+                const method = isEditing ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    closeProductModal();
+                    loadProducts();
+                } else {
+                    showAlert(data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Submit error:', error);
+                showAlert('Erro ao salvar produto', 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Salvar Produto';
+            }
+        }
+
+        // =============================================================================
+        // PRODUCT ACTIONS
+        // =============================================================================
+        function editProduct(id) {
+            openProductModal(id);
+        }
+
+        async function deleteProduct(id) {
+            const product = currentProducts.find(p => p.id === id);
+            if (!product) return;
+            
+            if (!confirm(`Tem certeza que deseja excluir "${product.name}"?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/products/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    loadProducts();
+                } else {
+                    showAlert(data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                showAlert('Erro ao excluir produto', 'error');
+            }
+        }
+
+        // =============================================================================
+        // UTILITIES
+        // =============================================================================
+        function showAlert(message, type) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('productModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeProductModal();
+            }
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Membros VIP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #E50914;
+            --primary-dark: #B81D24;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--gray-900), var(--gray-800));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .login-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-color);
+            border-radius: 16px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.1);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Main Admin Layout */
+        .admin-layout {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .admin-layout.active {
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .sidebar-logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .sidebar-nav {
+            padding: 1rem;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--gray-600);
+            text-decoration: none;
+            margin-bottom: 0.25rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .nav-item:hover {
+            background-color: var(--gray-100);
+            color: var(--gray-900);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .main-header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .main-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .main-body {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Products Section */
+        .section-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gray-50);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #DC2626;
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .table th {
+            background-color: var(--gray-50);
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .table td {
+            color: var(--gray-900);
+        }
+
+        .table tr:hover {
+            background-color: var(--gray-50);
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-locked {
+            background-color: #FEE2E2;
+            color: #991B1B;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray-400);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background-color: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* Form */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background-color: white;
+        }
+
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.1);
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed var(--gray-300);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            background-color: var(--gray-50);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary-color);
+            background-color: #FEF2F2;
+        }
+
+        .file-upload.dragover {
+            border-color: var(--primary-color);
+            background-color: #FEF2F2;
+        }
+
+        .file-upload-input {
+            display: none;
+        }
+
+        .file-upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            color: var(--gray-400);
+        }
+
+        .file-upload-text {
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload-hint {
+            color: var(--gray-400);
+            font-size: 0.875rem;
+        }
+
+        .file-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .file-preview-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
