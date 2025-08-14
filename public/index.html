@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área de Membros VIP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#E50914">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Membros VIP">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/favicon.ico">
+    
+    <style>
+        :root {
+            --primary-color: #E50914;
+            --primary-dark: #B81D24;
+            --secondary-color: #F5F5F1;
+            --dark-bg: #141414;
+            --darker-bg: #0B0B0B;
+            --card-bg: #181818;
+            --text-color: #FFFFFF;
+            --text-secondary: #999999;
+            --border-color: #444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: #000000;
+            color: var(--text-color);
+            overflow-x: hidden;
+            padding-bottom: 70px;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #000000, #1a1a1a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .login-container {
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            padding: 3rem 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            border: 1px solid #333;
+        }
+
+        .login-logo-img {
+            width: 120px;
+            height: auto;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .email-input {
+            padding: 1rem 1.5rem;
+            border: 2px solid #333;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+        }
+
+        .email-input::placeholder {
+            color: #999;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-align: left;
+            margin: 0.5rem 0;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+        }
+
+        .checkbox-container label {
+            font-size: 0.9rem;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, var(--primary-color), #cc0000);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(229, 9, 20, 0.4);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* PWA Install Banner */
+        .pwa-install-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, var(--primary-color), #cc0000);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            z-index: 10000;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .pwa-install-banner.show {
+            transform: translateY(0);
+        }
+
+        .pwa-install-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .pwa-install-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .pwa-install-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pwa-install-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .pwa-close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+
+        /* VIP Modal */
+        .vip-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+            backdrop-filter: blur(8px);
+        }
+
+        .vip-modal-content {
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--primary-color);
+            position: relative;
+        }
+
+        .vip-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .close-vip-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #ccc;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-vip-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .vip-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), #cc0000);
+            border-radius: 20px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(229, 9, 20, 0.3);
+        }
+
+        .vip-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+
+        .vip-modal h3 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .vip-modal p {
+            margin-bottom: 2rem;
+            color: #aaa;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .btn-vip-upgrade {
+            background: linear-gradient(135deg, var(--primary-color), #cc0000);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        .btn-vip-upgrade:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(229, 9, 20, 0.4);
+        }
+
+        .btn-later {
+            background: transparent;
+            color: #888;
+            padding: 0.8rem 2rem;
+            border: 1px solid #444;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+
+        .btn-later:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ccc;
+            border-color: #666;
+        }
+
+        /* Main App */
+        .main-app {
+            display: none;
+        }
+
+        .main-app.active {
+            display: block;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(20,20,20,0.5) 100%);
+            padding: 1rem 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            transition: background-color 0.3s ease;
+        }
+        
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            letter-spacing: 2px;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-email {
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .logout-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .logout-btn:hover {
+            background-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        /* Status Bar - REDUZIDA */
+        .status-bar {
+            background: linear-gradient(135deg, #333, #1a1a1a);
+            padding: 8px 4%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            z-index: 99;
+            border-bottom: 1px solid #444;
+            gap: 20px;
+        }
+
+        .status-badge {
+            background: linear-gradient(135deg, #666, #555);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-badge.vip {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+        }
+
+        .upgrade-btn {
+            background: linear-gradient(135deg, var(--primary-color), #cc0000);
+            color: white;
+            padding: 6px 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .upgrade-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+        }
+
+        /* Main Content */
+        main {
+            padding-top: 120px;
+            min-height: 100vh;
+            background-color: #000000;
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            padding: 2rem 4%;
+            background-color: #000000;
+        }
+        
+        .category-section {
+            margin-bottom: 4rem;
+        }
+        
+        .category-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+            color: white;
+        }
+        
+        .module-grid {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 1.5rem;
+            padding-top: 0.5rem;
+            scroll-behavior: smooth;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .module-grid::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .module-card {
+            flex: 0 0 auto;
+            width: 200px;
+            height: 356px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            background-color: var(--card-bg);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-origin: center bottom;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        
+        .module-card:hover {
+            transform: scale(1.08);
+            z-index: 10;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+        }
+        
+        .module-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+        
+        .locked-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+        
+        .lock-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Product Modal */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: flex-start;
+            z-index: 999;
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+        
+        .modal {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            margin: 40px auto;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .modal.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        .modal-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #000;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .close-modal:hover {
+            background: var(--primary-color);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .modal-description {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            text-align: center;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #cc0000);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(229, 9, 20, 0.4);
+        }
+        
+        /* Galeria do Modal */
+        .media-gallery {
+            border-top: 1px solid #333;
+            padding-top: 1.5rem;
+        }
+        
+        .gallery-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 1.2rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .gallery-container {
+            height: 350px;
+            overflow-y: scroll;
+            padding-right: 10px;
+        }
+        
+        .gallery-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .gallery-container::-webkit-scrollbar-track {
+            background: #333;
+            border-radius: 4px;
+        }
+        
+        .gallery-container::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        .gallery-container::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        .gallery-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: #222;
+            cursor: pointer;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.01);
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .gallery-item video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            background: #000;
+        }
+        
+        .gallery-play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            padding: 12px;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .gallery-play-button {
+            width: 40px;
+            height: 40px;
+            background: rgba(229, 9, 20, 0.9);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .gallery-play-icon {
+            width: 20px;
+            height: 20px;
+            fill: white;
+            margin-left: 3px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #cc0000, #990000, #660000);
+            display: flex;
+            z-index: 1001;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 4px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-family: inherit;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 2px;
+            fill: currentColor;
+        }
+
+        .nav-text {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .user-email {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- PWA Install Banner -->
+    <div class="pwa-install-banner" id="pwaInstallBanner">
+        <div class="pwa-install-content">
+            <span class="pwa-install-text">📱 Instalar App VIP na tela inicial</span>
+            <button class="pwa-install-btn" onclick="installPWA()">INSTALAR</button>
+            <button class="pwa-close-btn" onclick="closePwaInstall()">&times;</button>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <img src="https://hotmoney.space/wp-content/uploads/2025/04/ChatGPT-Image-2-de-abr.-de-2025-14_30_25.png" 
+                 alt="Membros VIP" 
+                 class="login-logo-img">
+            <h2 class="login-title">Acesse sua área exclusiva</h2>
+            <form class="login-form" id="loginForm">
+                <input 
+                    type="email" 
+                    class="email-input" 
+                    id="emailInput" 
+                    placeholder="Digite seu email"
+                    required
+                >
+                <div class="checkbox-container">
+                    <input type="checkbox" id="stayConnected" checked>
+                    <label for="stayConnected">Manter conectado</label>
+                </div>
+                <button type="submit" class="login-btn" id="loginBtn">
+                    ENTRAR
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- VIP Upgrade Modal -->
+    <div class="vip-modal" id="vipModal">
+        <div class="vip-modal-content">
+            <div class="vip-badge">VIP</div>
+            <button class="close-vip-modal" onclick="closeVipModal()">&times;</button>
+            
+            <div class="vip-icon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L13.09 8.26L22 9L17 14L18.18 22L12 19L5.82 22L7 14L2 9L10.91 8.26L12 2Z" fill="currentColor"/>
+                </svg>
+            </div>
+            
+            <h3>UPGRADE PARA VIP</h3>
+            <p>Desbloqueie acesso ilimitado a todos os conteúdos! Tenha uma experiência completa sem limitações.</p>
+            
+            <button class="btn-vip-upgrade" onclick="window.open('https://hotmoney.space/', '_blank')">QUERO SER VIP</button>
+            <button class="btn-later" onclick="closeVipModal()">AGORA NÃO</button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="main-app" id="mainApp">
+        <header id="mainHeader">
+            <div class="logo">MEMBROS VIP</div>
+            <div class="user-profile">
+                <span class="user-email" id="userEmail">usuário@email.com</span>
+                <button class="logout-btn" onclick="handleLogout()" title="Sair">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 17L21 12L16 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 12H9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span class="status-badge" id="statusBadge">FREE</span>
+            <button class="upgrade-btn" onclick="showVipModal()">QUERO SER VIP</button>
+        </div>
+        
+        <main>
+            <div class="content-wrapper">
+                <!-- Banner Exemplo -->
+                <section class="category-section">
+                    <div class="module-grid" id="bannerExample">
+                        <div class="module-card" onclick="showFirstClickModal()">
+                            <img src="https://files.catbox.moe/i6sfiz.png" alt="Banner Exemplo" class="module-thumbnail">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Categorias de Produtos -->
+                <section class="category-section">
+                    <h2 class="category-title">MEUS PRODUTOS</h2>
+                    <div class="module-grid" id="meusProdutos">
+                        <div class="loading">Carregando produtos...</div>
+                    </div>
+                </section>
+                
+                <section class="category-section">
+                    <h2 class="category-title">MAIS VENDIDOS</h2>
+                    <div class="module-grid" id="maisVendidos">
+                        <div class="loading">Carregando produtos...</div>
+                    </div>
+                </section>
+                
+                <section class="category-section">
+                    <h2 class="category-title">CRIADORAS DE CONTEÚDOS</h2>
+                    <div class="module-grid" id="criadorasConteudos">
+                        <div class="loading">Carregando produtos...</div>
+                    </div>
+                </section>
+                
+                <section class="category-section">
+                    <h2 class="category-title">CHAMADAS DE VÍDEO</h2>
+                    <div class="module-grid" id="chamadasVideo">
+                        <div class="loading">Carregando produtos...</div>
+                    </div>
+                </section>
+                
+                <section class="category-section">
+                    <h2 class="category-title">PARA HOMENS</h2>
+                    <div class="module-grid" id="paraHomens">
+                        <div class="loading">Carregando produtos...</div>
+                    </div>
+                </section>
+                
+                <section class="category-section">
+                    <h2 class="category-title">FETICHES</h2>
+                    <div class="module-grid" id="fetiches">
+                        <div class="loading">Carregando produtos...</div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Modal de detalhes do produto -->
+            <div class="overlay" id="productModal">
+                <div class="modal" id="modalContent">
+                    <div class="modal-header">
+                        <video class="modal-video" id="modalVideo" controls>
+                            <source src="" type="video/mp4">
+                        </video>
+                        <button class="close-modal" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 class="modal-title" id="modalTitle">Título do Produto</h3>
+                        <div class="modal-description" id="modalDescription">
+                            Descrição do produto vai aparecer aqui.
+                        </div>
+                        <div class="modal-actions" id="modalActions">
+                            <button class="btn-primary" id="modalButton">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                ACESSAR CONTEÚDO
+                            </button>
+                        </div>
+                        
+                        <div class="media-gallery">
+                            <h4 class="gallery-title">Prévia do Conteúdo</h4>
+                            <div class="gallery-container">
+                                <div class="gallery-list" id="mediaGallery">
+                                    <!-- Galeria será inserida dinamicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Barra de Navegação Inferior -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="navigate('conteudos')">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                <span class="nav-text">Conteúdos</span>
+            </button>
+
+            <button class="nav-item" onclick="navigate('videos')">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <polygon points="5,3 19,12 5,21"/>
+                </svg>
+                <span class="nav-text">Vídeos</span>
+            </button>
+
+            <button class="nav-item" onclick="navigate('lives')">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 1l3.09 6.26L22 9l-5 4.87L18.18 21 12 17.77 5.82 21 7 13.87 2 9l6.91-1.74L12 1z"/>
+                </svg>
+                <span class="nav-text">Lives</span>
+            </button>
+
+            <button class="nav-item" onclick="navigate('encontros')">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                <span class="nav-text">Encontros</span>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        // =============================================================================
+        // GLOBAL VARIABLES
+        // =============================================================================
+        let currentUser = localStorage.getItem('currentUser');
+        let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        let hasShownPwaPopup = localStorage.getItem('hasShownPwaPopup') === 'true';
+        let hasShownFirstClick = localStorage.getItem('hasShownFirstClick') === 'true';
+        let deferredPrompt;
+
+        // API Base URL - Altere para seu domínio em produção
+        const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+
+        // =============================================================================
+        // PWA FUNCTIONALITY
+        // =============================================================================
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed'));
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            if (!hasShownPwaPopup && isLoggedIn) {
+                setTimeout(() => showPwaInstallBanner(), 3000);
+            }
+        });
+
+        function showPwaInstallBanner() {
+            const banner = document.getElementById('pwaInstallBanner');
+            banner.classList.add('show');
+            hasShownPwaPopup = true;
+            localStorage.setItem('hasShownPwaPopup', 'true');
+        }
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('PWA installed successfully');
+                    }
+                    deferredPrompt = null;
+                    closePwaInstall();
+                });
+            } else {
+                alert('Para instalar:\n\n1. Toque no menu do navegador (⋮)\n2. Selecione "Adicionar à tela inicial"\n3. Confirme a instalação');
+                closePwaInstall();
+            }
+        }
+
+        function closePwaInstall() {
+            const banner = document.getElementById('pwaInstallBanner');
+            banner.classList.remove('show');
+        }
+
+        // =============================================================================
+        // LOGIN FUNCTIONALITY
+        // =============================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            if (isLoggedIn && currentUser) {
+                autoLogin();
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('emailInput').value;
+            const stayConnected = document.getElementById('stayConnected').checked;
+            
+            if (email && email.includes('@')) {
+                const loginBtn = document.getElementById('loginBtn');
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'ENTRANDO...';
+                
+                setTimeout(() => {
+                    if (stayConnected) {
+                        localStorage.setItem('currentUser', email);
+                        localStorage.setItem('isLoggedIn', 'true');
+                    }
+                    
+                    currentUser = email;
+                    isLoggedIn = true;
+                    
+                    performLogin();
+                }, 1500);
+                return;
+            }
+            
+            alert('Por favor, digite um email válido');
+        });
+
+        function autoLogin() {
+            performLogin();
+        }
+
+        function performLogin() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').classList.add('active');
+            document.getElementById('userEmail').textContent = currentUser;
+            
+            loadProducts();
+            
+            if (!hasShownPwaPopup && deferredPrompt) {
+                setTimeout(() => showPwaInstallBanner(), 2000);
+            }
+        }
+
+        function handleLogout() {
+            if (confirm('Deseja realmente sair?')) {
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('isLoggedIn');
+                location.reload();
+            }
+        }
+
+        // =============================================================================
+        // MODAL FUNCTIONALITY
+        // =============================================================================
+        function showVipModal() {
+            const modal = document.getElementById('vipModal');
+            modal.style.display = 'flex';
+        }
+
+        function closeVipModal() {
+            const modal = document.getElementById('vipModal');
+            modal.style.display = 'none';
+        }
+
+        function showFirstClickModal() {
+            if (!hasShownFirstClick) {
+                showVipModal();
+                hasShownFirstClick = true;
+                localStorage.setItem('hasShownFirstClick', 'true');
+            }
+        }
+
+        function openModal(product) {
+            const modal = document.getElementById('modalContent');
+            const overlay = document.getElementById('productModal');
+            
+            document.getElementById('modalTitle').textContent = product.name;
+            document.getElementById('modalDescription').textContent = product.description;
+            
+            // Set main video
+            const modalVideo = document.getElementById('modalVideo');
+            if (product.main_video) {
+                modalVideo.src = product.main_video;
+            }
+            
+            // Set button action
+            const modalButton = document.getElementById('modalButton');
+            if (product.access_url) {
+                modalButton.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    ACESSAR CONTEÚDO
+                `;
+                modalButton.onclick = () => {
+                    window.open(product.access_url, '_blank');
+                    closeModal();
+                };
+            } else if (product.buy_url) {
+                modalButton.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    COMPRAR AGORA - R$ ${product.price ? product.price.toFixed(2) : '0,00'}
+                `;
+                modalButton.onclick = () => {
+                    window.open(product.buy_url, '_blank');
+                    closeModal();
+                };
+            }
+            
+            // Render gallery
+            renderGallery(product.gallery || []);
+            
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 50);
+        }
+
+        function renderGallery(gallery) {
+            const galleryContainer = document.getElementById('mediaGallery');
+            galleryContainer.innerHTML = '';
+            
+            gallery.forEach((item) => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.onclick = () => {
+                    if (item.type === 'video') {
+                        changeMainVideo(item.url);
+                    }
+                };
+                
+                if (item.type === 'video') {
+                    galleryItem.innerHTML = `
+                        <video>
+                            <source src="${item.url}" type="video/mp4">
+                        </video>
+                        <div class="gallery-play-overlay">
+                            <div class="gallery-play-button">
+                                <svg class="gallery-play-icon" viewBox="0 0 24 24">
+                                    <polygon points="5,3 19,12 5,21"/>
+                                </svg>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    galleryItem.innerHTML = `<img src="${item.url}" alt="Prévia do conteúdo">`;
+                }
+                
+                galleryContainer.appendChild(galleryItem);
+            });
+        }
+
+        function changeMainVideo(videoUrl) {
+            const video = document.getElementById('modalVideo');
+            video.src = videoUrl;
+            video.load();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modalContent');
+            const overlay = document.getElementById('productModal');
+            const video = document.getElementById('modalVideo');
+            
+            modal.classList.remove('active');
+            video.pause();
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 400);
+        }
+
+        // =============================================================================
+        // PRODUCTS FUNCTIONALITY
+        // =============================================================================
+        async function loadProducts() {
+            try {
+                const response = await fetch(`${API_BASE}/api/products`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    renderProducts(data.products);
+                } else {
+                    renderMockProducts(); // Fallback para dados mock
+                }
+            } catch (error) {
+                console.log('API not available, using mock data');
+                renderMockProducts();
+            }
+        }
+
+        function renderMockProducts() {
+            const mockProducts = [
+                {
+                    id: 1,
+                    name: "Whatsapp Da Fabi",
+                    description: "Clique no botão abaixo e fale com a Fabaine no seu Whatsapp particular",
+                    banner_url: "https://files.catbox.moe/i6sfiz.png",
+                    main_video: "https://e-volutionn.com/wp-content/uploads/2025/07/download-1.mp4",
+                    access_url: "https://wa.me/5511975768554?text=Oi%20Fabi%2C%20vim%20pelo%20APP",
+                    category: "meus_produtos",
+                    gallery: [
+                        { type: "image", url: "https://e-volutionn.com/wp-content/uploads/2025/07/IMG_7978.jpg" },
+                        { type: "image", url: "https://e-volutionn.com/wp-content/uploads/2025/07/IMG_7975.jpg" },
+                        { type: "video", url: "https://e-volutionn.com/wp-content/uploads/2025/05/AMOSTRA-01.mp4" }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "Pack Premium Exclusivo",
+                    description: "Conteúdo premium exclusivo para membros VIP. Acesso a lives privadas e materiais únicos.",
+                    banner_url: "https://images.unsplash.com/photo-1494790108755-2616c78d9f14?w=400&h=600&fit=crop",
+                    main_video: "https://www.w3schools.com/html/mov_bbb.mp4",
+                    buy_url: "https://hotmoney.space/",
+                    price: 147.00,
+                    category: "mais_vendidos",
+                    gallery: [
+                        { type: "video", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
+                        { type: "image", url: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=600&fit=crop" }
+                    ]
+                }
+            ];
+            
+            renderProducts(mockProducts);
+        }
+
+        function renderProducts(products) {
+            const categories = {
+                'meus_produtos': document.getElementById('meusProdutos'),
+                'mais_vendidos': document.getElementById('maisVendidos'),
+                'criadoras_conteudos': document.getElementById('criadorasConteudos'),
+                'chamadas_video': document.getElementById('chamadasVideo'),
+                'para_homens': document.getElementById('paraHomens'),
+                'fetiches': document.getElementById('fetiches')
+            };
+
+            // Clear loading states
+            Object.values(categories).forEach(container => {
+                if (container) container.innerHTML = '';
+            });
+
+            // Group products by category
+            const productsByCategory = {};
+            products.forEach(product => {
+                const category = product.category || 'meus_produtos';
+                if (!productsByCategory[category]) {
+                    productsByCategory[category] = [];
+                }
+                productsByCategory[category].push(product);
+            });
+
+            // Render products in their categories
+            Object.entries(productsByCategory).forEach(([category, categoryProducts]) => {
+                const container = categories[category];
+                if (container) {
+                    categoryProducts.forEach(product => {
+                        container.appendChild(createProductCard(product));
+                    });
+                }
+            });
+
+            // Add empty message for empty categories
+            Object.entries(categories).forEach(([category, container]) => {
+                if (container && container.children.length === 0) {
+                    container.innerHTML = '<div class="loading">Nenhum produto nesta categoria</div>';
+                }
+            });
+        }
+
+        function createProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'module-card';
+            card.onclick = () => openModal(product);
+            
+            const img = document.createElement('img');
+            img.src = product.banner_url;
+            img.alt = product.name;
+            img.className = 'module-thumbnail';
+            
+            card.appendChild(img);
+            
+            // Add lock overlay for products without access_url
+            if (!product.access_url) {
+                const overlay = document.createElement('div');
+                overlay.className = 'locked-overlay';
+                overlay.innerHTML = `
+                    <svg class="lock-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="white" stroke-width="2"/>
+                        <path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                `;
+                card.appendChild(overlay);
+            }
+            
+            return card;
+        }
+
+        // =============================================================================
+        // NAVIGATION
+        // =============================================================================
+        function navigate(section) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            if (section !== 'conteudos') {
+                alert(`Seção "${section}" em desenvolvimento`);
+                return;
+            }
+        }
+
+        // =============================================================================
+        // EVENT LISTENERS
+        // =============================================================================
+        window.onclick = function(event) {
+            const productModal = document.getElementById('productModal');
+            const vipModal = document.getElementById('vipModal');
+            
+            if (event.target === productModal) {
+                closeModal();
+            }
+            if (event.target === vipModal) {
+                closeVipModal();
+            }
+        };
+    </script>
+</body>
+</html>
